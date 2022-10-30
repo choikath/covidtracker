@@ -69,7 +69,8 @@ class BarVis {
 
             //Add text label for axes
             vis.barchartArea.append("text")
-                .attr("transform","translate(" + (vis.barwidth-50) + " ," + (vis.height-10) + ")")
+                .attr("transform","translate(" + (vis.barwidth-75) + " ," + (vis.height-5) + ")")
+                .attr("class", "axis-label")
                 .style("text-anchor", "middle")
                 .text("State");
 

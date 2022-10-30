@@ -24,3 +24,11 @@
 .labelBarValue {
     font-size:7px;
 }
+
+.axis-label {
+    font-size: 7px;
+}
+
+.bar-title, .map-title {
+    font-size: 9px;
+}

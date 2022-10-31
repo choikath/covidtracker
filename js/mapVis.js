@@ -78,7 +78,7 @@ class MapVis {
         // draw legend box
         vis.legend = vis.svg.append("g")
             .attr('class', 'legend')
-            .attr('transform', `translate(${vis.width / 4}, ${vis.height - 75})`)
+            .attr('transform', `translate(${vis.width / 4-100}, ${vis.height - 75})`)
             .attr('width', 200)
             .attr('height', 30)
 

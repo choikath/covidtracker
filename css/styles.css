@@ -21,14 +21,19 @@
     font-size: .5em;
 }
 
-.labelBarValue {
-    font-size:7px;
-}
-
 .axis-label {
     font-size: 7px;
 }
 
 .bar-title, .map-title {
     font-size: 9px;
+}
+.valueBars {
+    z-index: -1;
+}
+
+.labelBarValue {
+    font-size:7px;
+    z-index: 10;
+    text-anchor: middle;
 }

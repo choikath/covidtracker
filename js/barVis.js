@@ -27,7 +27,7 @@ class BarVis {
         vis.margin = {top: 20, right: 20, bottom: 20, left: 40};
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
         vis.height = document.getElementById(vis.parentElement).getBoundingClientRect().height - vis.margin.top - vis.margin.bottom;
-        vis.barwidth = 500;
+        vis.barwidth = vis.width*1.8;
 
         // init drawing area
         vis.svg = d3.select("#" + vis.parentElement).append("svg")
@@ -74,6 +74,10 @@ class BarVis {
                 .style("text-anchor", "middle")
                 .text("State");
 
+        // Finally, add barlabels within own group so they are always positioned on top of bars.
+        vis.barlabelgroup = vis.barchartArea.append("g")
+            .attr("class", "barlabelgroup")
+            .style("z-index", 10)
         //     vis.barchartArea.append("text")
         //         .attr("transform","rotate(-90)")
         //         .attr("y", -30)
@@ -212,14 +216,46 @@ class BarVis {
         vis.bars.enter()
             .append("rect")
             .merge(vis.bars)
-            .transition()
-            .duration(800)
             .attr("x", d => 5+vis.x(d.state))
-            .attr("y", d=> vis.height-vis.y(vis.maxRange-d[selectedCategory]))
+            .attr("class", "valueBars")
+            .on('mouseover', function(event, d){
+                //Make sure to use a regular function(){} rather than an arrow function so that the keyword this is bound to the actual arc, i.e. the selection.
+                d3.select(this)
+                    .attr('stroke-width', '1px')
+                    .attr('stroke', 'darkgray')
+                    .attr('fill', 'rgb(65,192,160)');
+
+                vis.tooltip
+                    .style("opacity", 1)
+                    .style("left", event.pageX + 20 + "px")
+                    .style("top", event.pageY + "px")
+                    .html(`
+                     <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 20px">
+                         <h4><b>${d.state}</b></h4>    
+                         <p>${selectedCategory}: ${d[selectedCategory]}</p>                
+                     </div>`);
+
+            })
+            .on('mouseout', function(d){
+                d3.select(this)
+                    .attr("stroke", "darkgray")
+                    .attr('stroke-width', '1px')
+                    .attr("fill", "lightgray")
+
+                vis.tooltip
+                    .style("opacity", 0)
+                    .style("left", 0)
+                    .style("top", 0)
+                    .html(``);
+            })
+            .transition()
+            .duration(400)
+            .attr("fill", "lightgray")
             .attr("width", (vis.barwidth-100) / (vis.displayData.length*2))
             .attr("height", d => vis.y(vis.maxRange-d[selectedCategory]))
-            .attr("fill", "lightgray")
-            .attr("class", "valueBars");
+            .attr("y", d=> vis.height-vis.y(vis.maxRange-d[selectedCategory]))
+
+        ;
 
         //	Append text label for values
         vis.barlabels = vis.barchartArea.selectAll(".labelBarValue")
@@ -230,10 +266,10 @@ class BarVis {
         vis.barlabels.enter()
             .append("text")
             .merge(vis.barlabels)
-            .transition()
-            .duration(800)
             .attr("class", "labelBarValue")
-            .attr("x", d => 6+vis.x(d.state))
+            .transition()
+            .duration(400)
+            .attr("x", d => 15+vis.x(d.state))
             .attr("y", d=> vis.height-vis.y(vis.maxRange-d[selectedCategory])+8)
             .text(d => d3.format(".2s")(d[selectedCategory]))
 
